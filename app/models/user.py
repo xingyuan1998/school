@@ -36,8 +36,6 @@ class Interests(Follower):
     pass
 
 
-
-
 class Profile(db.EmbeddedDocument):
     birthday = DateTimeField()
     collage = StringField(max_length=128)
@@ -95,48 +93,7 @@ class User(db.Document):
 
     def verify_auth_token(self, token):
         return check_hash(self.token, token)
-    # def generate_auth_token(self):
-    #     s = Serializer(SECRET_KEY)
-    #     return jsonify({
-    #         'token': s.dumps({'id': self.student_id})
-    #     })
-    #
-    # @staticmethod
-    # def verify_auth_token(token):
-    #     s = Serializer(SECRET_KEY)
-    #     try:
-    #         data = s.loads(token)
-    #     except:
-    #         return None
-    #     return User.objects().first()
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-
-# from mongoengine import EmbeddedDocument, StringField, IntField, DateTimeField, ListField, EmbeddedDocumentField, \
-#     EmailField
-#
-# from exts import db, db
-#
-#
-# class Fo(EmbeddedDocument):
-#     user = StringField(max_length=256)
-#     name = StringField(max_length=32)
-#
-#
-# class User(db.Document):
-#     student_id = StringField(max_length=50)
-#     email = StringField(required=True)
-#     name = StringField(max_length=50)
-#     age = IntField()
-#     birthday = DateTimeField()
-#     collage = StringField(max_length=128)
-#     school = StringField(max_length=128)
-#     address = StringField(max_length=256)
-#     phone = StringField(max_length=128)
-#     qq = StringField(max_length=128)
-#     wechat = StringField(max_length=128)
-#     follower = ListField(
-#         EmbeddedDocumentField(Fo)
-#     )
