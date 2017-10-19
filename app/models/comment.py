@@ -5,6 +5,7 @@ from bson.json_util import dumps
 from app.models.user import User
 import json
 
+
 class Comment(Document):
     author = ReferenceField(User)
     content = StringField()

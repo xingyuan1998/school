@@ -68,6 +68,10 @@ class User(db.Document):
     profile = EmbeddedDocumentField(Profile)
     # 粉丝
     followers = ListField(EmbeddedDocumentField(Followers))
+    # follower_num
+    followers_num = IntField()
+    interst_num = IntField()
+
     # 关注者
     intersts = ListField(EmbeddedDocumentField(Interests))
     # 不让他看自己的朋友圈或者什么玩意的
@@ -111,12 +115,8 @@ class User(db.Document):
         return check_password_hash(self.password_hash, password)
 
     def get_profile_json(self):
-        i = ''
-        ids = json.loads(bson.json_util.dumps(self.id))
-        for name, value in ids.items():
-            i = value
         json_obj = {
-            'id': i,
+            'id': self.user_id,
             'name': self.name,
             'student_id': self.student_id,
             'nick_name': self.nick_name,
@@ -128,13 +128,8 @@ class User(db.Document):
         return json_obj
 
     def get_friends(self):
-        i = ''
-        ids = json.loads(bson.json_util.dumps(self.id))
-        for name, value in ids.items():
-            i = value
         json_obj = {
-            'id':i,
+            'id': self.user_id,
             'followers':self.followers,
             'intersts': self.intersts,
-
         }

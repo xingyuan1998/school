@@ -34,21 +34,8 @@ def sh_list(page=1):
     nex = page * per_page
     shs = Secondhand.objects[pre:nex]
     datas = []
-    data = {}
     for sh in shs:
-        comments = []
-        if len(sh.comments)>=1:
-            for comment in sh.comments:
-                comments.append(comment.to_json())
-            data['comments'] = comments
-        data['title']=sh.title
-        data['content']=sh.content
-        data['types']=sh.types
-        data['image']=sh.pictures
-        data['ago_price']=sh.ago_price
-        data['now_price']=sh.now_price
-        data['author'] = sh.author.name
-        datas.append(data)
+        datas.append(sh.get_json())
     return jsonify(datas)
 
 
@@ -63,7 +50,10 @@ def sh_buy_list(page=1):
             'status': 400,
             'des': '暂无数据'
         })
-    return jsonify(sh)
+    data = []
+    for s in sh:
+        data.append(s.get_json)
+    return jsonify(data)
 
 
 @api.route('/sh/bought/list/<int:page>/')
@@ -71,13 +61,16 @@ def sh_bought_list(page=1):
     per_page = 10
     pre = int(page-1)*per_page
     nex = page * per_page
-    sh = Secondhand.objects(buyer=g.user)[pre:nex]
-    if sh is None or len(sh)==0:
+    shs = Secondhand.objects(buyer=g.user)[pre:nex]
+    if shs is None or len(shs)==0:
         return jsonify({
             'status': 400,
             'des': '暂无数据'
         })
-    return jsonify(sh)
+    datas = []
+    for sh in shs:
+        datas.append(sh.get_json())
+    return jsonify(datas)
 
 
 @api.route('/sh/comments/', methods=['POST'])
@@ -131,6 +124,11 @@ def del_comments():
 @api.route('/sh/', methods=['DELETE'])
 def del_sh():
     sh_id = request.values.get('sh_id')
+    if sh_id is None:
+        return jsonify({
+            'status': 404,
+            'des': '没有找到'
+        })
     sh = Secondhand.objects(id=sh_id).first()
     if sh is None:
         return jsonify({
@@ -138,6 +136,15 @@ def del_sh():
         }), 404
     sh.delete()
     return 'del ok'
+
+@api.route('/shs/', methods=['DELETE'])
+def del_all_sh():
+    sh = Secondhand.objects.all()
+    sh.delete()
+    return jsonify({
+        'ok': 'ok'
+    })
+
 
 '''
 新建一个二手货
