@@ -1,9 +1,9 @@
 from flask import jsonify
 from flask_mongoengine import Document
 from mongoengine import ReferenceField, StringField, IntField, DateTimeField
-
+from bson.json_util import dumps
 from app.models.user import User
-
+import json
 
 class Comment(Document):
     author = ReferenceField(User)
@@ -15,8 +15,12 @@ class Comment(Document):
     update_time = DateTimeField()
 
     def to_json(self):
+        i =''
+        ids = json.loads(dumps(self.id))
+        for name,value in ids.items():
+            i = value
         json_con ={
-            'comment_id': str(self.id),
+            'comment_id': i,
             'author': self.author.name,
             'content': self.content,
             'title': self.title,
