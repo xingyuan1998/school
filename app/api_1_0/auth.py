@@ -1,3 +1,6 @@
+import json
+
+import bson.json_util
 from flask import Blueprint, jsonify, g, request
 from werkzeug.security import generate_password_hash
 
@@ -20,6 +23,7 @@ def reg_user():
         user.profile = profile
         user.token = user.generate_auth_token()
         user.save()
+        user.set_user_id()
         return jsonify({
             'status': 200,
             'des': '注册成功',

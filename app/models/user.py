@@ -1,4 +1,8 @@
 import datetime
+import json
+
+import bson.json_util
+
 from untils import get_hash, check_hash
 from configs.DevConfig import SECRET_KEY
 from exts import db
@@ -40,13 +44,13 @@ class Profile(db.EmbeddedDocument):
     birthday = DateTimeField()
     collage = StringField(max_length=128)
     school = StringField(max_length=128)
-    qq = StringField(max_length=128)
-    wechat = StringField(max_length=128)
     major = StringField(max_length=128)
 
 
 class User(db.Document):
     student_id = StringField(max_length=64)
+
+    user_id = StringField(max_length=256)
     # 用户登陆令牌
     token = StringField(max_length=256)
     # 真实姓名
@@ -57,6 +61,8 @@ class User(db.Document):
     password_hash = StringField(max_length=256)
     # 1表示男生，2 表示女生3表示保密 或未设置吧
     sex = IntField(default=3)
+    qq = StringField(max_length=128)
+    wechat = StringField(max_length=128)
     email = EmailField()
     # 个人简介
     profile = EmbeddedDocumentField(Profile)
@@ -87,6 +93,13 @@ class User(db.Document):
     create_time = DateTimeField()
     update_time = DateTimeField()
 
+    def set_user_id(self):
+        i = ''
+        ids = json.loads(bson.json_util.dumps(self.id))
+        for name, value in ids.items():
+            i = value
+        self.update(user_id=i)
+
     def generate_auth_token(self):
         self.token = get_hash(self.student_id + str(datetime.datetime.now()))
         return self.token
@@ -97,3 +110,31 @@ class User(db.Document):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def get_profile_json(self):
+        i = ''
+        ids = json.loads(bson.json_util.dumps(self.id))
+        for name, value in ids.items():
+            i = value
+        json_obj = {
+            'id': i,
+            'name': self.name,
+            'student_id': self.student_id,
+            'nick_name': self.nick_name,
+            'sex': self.sex,
+            'email': self.email,
+            'qq': self.qq,
+            'wechat': self.wechat,
+        }
+        return json_obj
+
+    def get_friends(self):
+        i = ''
+        ids = json.loads(bson.json_util.dumps(self.id))
+        for name, value in ids.items():
+            i = value
+        json_obj = {
+            'id':i,
+            'followers':self.followers,
+            'intersts': self.intersts,
+
+        }

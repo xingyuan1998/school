@@ -17,9 +17,9 @@ class Comment(Document):
     def to_json(self):
         i = ''
         ids = json.loads(dumps(self.id))
-        for name,value in ids.items():
+        for name, value in ids.items():
             i = value
-        json_con ={
+        json_con = {
             'comment_id': i,
             'author': self.author.name,
             'content': self.content,

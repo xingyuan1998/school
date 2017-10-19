@@ -1,5 +1,8 @@
 import datetime
+import json
 import time
+
+import bson.json_util
 from mongoengine import (
     StringField,
     IntField,
@@ -20,6 +23,7 @@ from .user import User
 
 
 class Common(Document):
+    d_id = StringField(max_length=128)
     author = ReferenceField(User)
     title = StringField(max_length=256)
     content = StringField()
@@ -38,3 +42,10 @@ class Common(Document):
     # 更新时间
     update_time = DateTimeField()
     meta = {'allow_inheritance': True}
+
+    def set_id(self):
+        i = ''
+        ids = json.loads(bson.json_util.dumps(self.id))
+        for name, value in ids.items():
+            i = value
+        self.update(d_id=i)
