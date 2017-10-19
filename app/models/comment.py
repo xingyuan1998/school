@@ -15,7 +15,7 @@ class Comment(Document):
     update_time = DateTimeField()
 
     def to_json(self):
-        i =''
+        i = ''
         ids = json.loads(dumps(self.id))
         for name,value in ids.items():
             i = value
