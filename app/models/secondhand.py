@@ -28,6 +28,7 @@ class Secondhand(Common):
         for comment in self.comments:
             data_comment.append(comment.to_json())
         json_obj = {
+            'id': self.d_id,
             'title':self.title,
             'content':self.content,
             'types': self.types,
