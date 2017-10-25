@@ -1,7 +1,7 @@
 import bson
 from flask import jsonify
 from flask_mongoengine import Document
-from mongoengine import ReferenceField, StringField, IntField, DateTimeField,BooleanField
+from mongoengine import ReferenceField, StringField, IntField, DateTimeField, BooleanField
 from bson.json_util import dumps
 from app.models.user import User
 import json
@@ -26,6 +26,7 @@ class Comment(Document):
     '''
         设置id
     '''
+
     def set_id(self):
         i = ''
         ids = json.loads(bson.json_util.dumps(self.id))
@@ -48,7 +49,7 @@ class Comment(Document):
 
             'is_reply': self.is_reply,
             'reply_user': self.reply.user_id,
-            'reply_user_name':self.reply.name,
+            'reply_user_name': self.reply.name,
             'last_reply': self.last_reply,
             'last_reply_content': self.last_reply_content
         }
