@@ -10,6 +10,7 @@ from app.models.user import User, Profile
 auth = Blueprint('auth', __name__, url_prefix='/auth')
 
 
+# 用户注册
 @auth.route('/user/reg/', methods=['GET', 'POST'])
 def reg_user():
     form = RegForm()
@@ -35,6 +36,7 @@ def reg_user():
     })
 
 
+# 用户登录
 @auth.route('/user/login/', methods=['POST'])
 def login_user():
     form = RegForm()
@@ -57,3 +59,9 @@ def login_user():
             'status': 400,
             'des': '登陆失败'
         })
+
+
+# 忘记密码
+@auth.route('/forget/password/', methods=['POST'])
+def forget_password():
+    pass

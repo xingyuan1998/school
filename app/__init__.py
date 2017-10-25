@@ -2,8 +2,9 @@ from flask import Flask
 from configs import DevConfig
 from app.api_1_0 import api as api_blueprint
 from app.api_1_0.auth import auth as auth_blueprint
-from exts import db
+from exts import db, mail
 from app.uploads import uploads as uploads_blueprint
+
 
 def create_app():
     app = Flask(__name__)
@@ -12,6 +13,7 @@ def create_app():
     # 初始化插件
     # 数据库
     db.init_app(app)
+    mail.init_app(app)
     # 注册蓝图
     # 基础api 蓝图
     app.register_blueprint(api_blueprint)

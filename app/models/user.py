@@ -7,7 +7,7 @@ from untils import get_hash, check_hash
 from configs.DevConfig import SECRET_KEY
 from exts import db
 from flask import current_app, jsonify
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from mongoengine import (
     StringField,
     IntField,
@@ -50,6 +50,7 @@ class Profile(db.EmbeddedDocument):
 class User(db.Document):
     student_id = StringField(max_length=64)
 
+    avatar = StringField(max_length=64, default="/avatar/default.png")
     user_id = StringField(max_length=256)
     # 用户登陆令牌
     token = StringField(max_length=256)
@@ -105,11 +106,15 @@ class User(db.Document):
         self.update(user_id=i)
 
     def generate_auth_token(self):
-        self.token = get_hash(self.student_id + str(datetime.datetime.now()))
+        token = get_hash(self.student_id + str(datetime.datetime.now()))
+        self.update(token=token)
         return self.token
 
     def verify_auth_token(self, token):
         return check_hash(self.token, token)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -130,6 +135,6 @@ class User(db.Document):
     def get_friends(self):
         json_obj = {
             'id': self.user_id,
-            'followers':self.followers,
+            'followers': self.followers,
             'intersts': self.intersts,
         }
